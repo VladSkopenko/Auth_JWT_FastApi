@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, HTTPException, Depends, status
 from src.services.auth import auth_service

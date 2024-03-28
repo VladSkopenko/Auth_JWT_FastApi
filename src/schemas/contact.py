@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from datetime import date
 
 
 class ContactModel(BaseModel):
     name: str
     last_name: str
-    email: str
+    email: EmailStr
     phone: str = Field(max_length=10)
     birthday: date
     description: str
