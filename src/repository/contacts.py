@@ -2,7 +2,7 @@ from typing import Type
 
 from sqlalchemy.orm import Session
 from src.database.models import Contact
-from src.schemas.schemas import ContactModel
+from src.schemas.contact import ContactModel
 from sqlalchemy import or_, func, select
 
 from datetime import datetime, timedelta

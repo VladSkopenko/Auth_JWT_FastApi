@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends, status, Path
 from sqlalchemy.orm import Session
 
 from src.database.db import get_db
-from src.schemas.schemas import ContactModel, ContactResponse
+from src.schemas.contact import ContactModel, ContactResponse
 from src.repository import contacts as repository_contacts
 
 router = APIRouter(prefix='/contacts', tags=["contacts"])
