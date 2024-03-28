@@ -1,9 +1,13 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
+
 from src.services.auth import auth_service
 from src.database.db import get_db
 from src.schemas.user import UserModel, UserResponse, TokenSchema
 from src.repository import users as repositories_users
+
+
 router = APIRouter(prefix='/auth', tags=["auth"])
 
 
@@ -17,12 +21,17 @@ async def signup(body: UserModel, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.post("/login")
-async def login(body: UserModel, db: Session = Depends(get_db)):
-    pass
-    return {}
-
-
+@router.post("/login",  response_model=TokenSchema)
+async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = await repositories_users.get_user_by_email(body.username, db)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email")
+    if not auth_service.verify_password(body.password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+    access_token = await auth_service.create_access_token(data={"sub": user.email, "test": "Сергій Багмет"})
+    refresh_token = await auth_service.create_refresh_token(data={"sub": user.email})
+    await repositories_users.update_token(user, refresh_token, db)
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 @router.get("/refresh_token")
 async def refresh_token(body: UserModel, db: Session = Depends(get_db)):
     pass
