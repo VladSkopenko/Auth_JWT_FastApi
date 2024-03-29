@@ -29,7 +29,7 @@ async def read_contacts(skip: int = 0, limit: int = 5, db: Session = Depends(get
 @router.post("/read", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
 async def create_contact(body: ContactModel, db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
-    return await repository_contacts.create_contact(body, db)
+    return await repository_contacts.create_contact(body, db, current_user)
 
 
 @router.put("/{contact_id}", response_model=ContactResponse)

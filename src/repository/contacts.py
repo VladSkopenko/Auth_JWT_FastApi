@@ -8,20 +8,21 @@ from sqlalchemy import or_, func, select
 from datetime import datetime, timedelta
 
 
-# async def get_contacts(skip: int, limit: int, db: Session) -> list[Type[Contact]]:
-#     return db.query(Contact).offset(skip).limit(limit).all()
+
 async def get_contacts(limit: int, offset: int, db: Session, current_user: User):
     stmt = select(Contact).filter_by(user=current_user).offset(offset).limit(limit)
     contact = db.execute(stmt)
     return contact.scalars().all()
 
-async def create_contact(body: ContactModel, db: Session) -> Contact:
+
+async def create_contact(body: ContactModel, db: Session, current_user: User) -> Contact:
     contact = Contact(name=body.name,
                       last_name=body.last_name,
                       email=body.email,
                       phone=body.phone,
                       birthday=body.birthday,
-                      description=body.description)
+                      description=body.description,
+                      user=current_user)
     db.add(contact)
     db.commit()
     db.refresh(contact)
