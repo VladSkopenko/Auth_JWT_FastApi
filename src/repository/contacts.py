@@ -8,7 +8,6 @@ from sqlalchemy import or_, func, select
 from datetime import datetime, timedelta
 
 
-
 async def get_contacts(limit: int, offset: int, db: Session, current_user: User):
     stmt = select(Contact).filter_by(user=current_user).offset(offset).limit(limit)
     contact = db.execute(stmt)
@@ -56,8 +55,8 @@ async def get_contact(id: int, db: Session):
     return contact.scalar_one_or_none()
 
 
-async def search_contacts(query: str, db: Session) -> list[Type[Contact]]:
-    contacts = db.query(Contact).filter(
+async def search_contacts(query: str, db: Session, current_user: User) -> list[Type[Contact]]:
+    contacts = db.query(Contact).filter_by(user=current_user).where(
         or_(
             Contact.name.ilike(f"%{query}%"),
             Contact.last_name.ilike(f"%{query}%"),
