@@ -22,11 +22,11 @@ async def search_contacts(query: str, db: Session = Depends(get_db),
 @router.get("/", response_model=List[ContactResponse])
 async def read_contacts(skip: int = 0, limit: int = 5, db: Session = Depends(get_db),
                         current_user: User = Depends(auth_service.get_current_user)):
-    contacts = await repository_contacts.get_contacts(skip, limit, db)
+    contacts = await repository_contacts.get_contacts(skip, limit, db, current_user)
     return contacts
 
 
-@router.post("/", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/read", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
 async def create_contact(body: ContactModel, db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
     return await repository_contacts.create_contact(body, db)

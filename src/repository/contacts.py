@@ -1,16 +1,19 @@
 from typing import Type
 
 from sqlalchemy.orm import Session
-from src.database.models import Contact
+from src.database.models import Contact, User
 from src.schemas.contact import ContactModel
 from sqlalchemy import or_, func, select
 
 from datetime import datetime, timedelta
 
 
-async def get_contacts(skip: int, limit: int, db: Session) -> list[Type[Contact]]:
-    return db.query(Contact).offset(skip).limit(limit).all()
-
+# async def get_contacts(skip: int, limit: int, db: Session) -> list[Type[Contact]]:
+#     return db.query(Contact).offset(skip).limit(limit).all()
+async def get_contacts(limit: int, offset: int, db: Session, current_user: User):
+    stmt = select(Contact).filter_by(user=current_user).offset(offset).limit(limit)
+    contact = db.execute(stmt)
+    return contact.scalars().all()
 
 async def create_contact(body: ContactModel, db: Session) -> Contact:
     contact = Contact(name=body.name,

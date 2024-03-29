@@ -1,17 +1,21 @@
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
+from typing import Optional
+
 from fastapi import Depends, HTTPException, status
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
+
+
 from src.database.db import get_db
-from src.database.models import User
-from typing import Optional
 from src.repository import users as repository_users
 
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    SECRET_KEY = "6b57c08e4a419e6bbce6a34a86fe306f54edc2cd21c67d3f7c5a5a791b5bcaf7"
+    ALGORITHM = "HS256"
 
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -19,21 +23,17 @@ class Auth:
     def get_password_hash(self, password: str):
         return self.pwd_context.hash(password)
 
-    SECRET_KEY = "key"  # TODO прибрать в env файл
-    ALGORITHM = "HS256"
-
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
-    # define a function to generate a new access token
     async def create_access_token(self, data: dict, expires_delta: Optional[float] = None):
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.utcnow() + timedelta(seconds=expires_delta)
         else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire, "scope": "refresh_token"})
-        encoded_refresh_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
-        return encoded_refresh_token
+            expire = datetime.utcnow() + timedelta(minutes=10)
+        to_encode.update({"iat": datetime.utcnow(), "exp": expire, 'scope': 'access_token'})
+        encoded_access_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
+        return encoded_access_token
 
     async def create_refresh_token(self, data: dict, expires_delta: Optional[float] = None):
         to_encode = data.copy()
@@ -41,7 +41,7 @@ class Auth:
             expire = datetime.utcnow() + timedelta(seconds=expires_delta)
         else:
             expire = datetime.utcnow() + timedelta(days=7)
-        to_encode.update({"iat": datetime.utcnow(), "exp": expire, "scope": "refresh_token"})
+        to_encode.update({"iat": datetime.utcnow(), "exp": expire, 'scope': 'refresh_token'})
         encoded_refresh_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return encoded_refresh_token
 
@@ -51,17 +51,16 @@ class Auth:
             if payload['scope'] == 'refresh_token':
                 email = payload['sub']
                 return email
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid scope for token')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid scope for token")
         except JWTError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
 
-    async def get_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    async def get_current_user(self, token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             if payload['scope'] == 'access_token':
@@ -73,7 +72,7 @@ class Auth:
         except JWTError as e:
             raise credentials_exception
 
-        user = repository_users.get_user_by_email(email, db)
+        user = await repository_users.get_user_by_email(email, db)
         if user is None:
             raise credentials_exception
         return user
