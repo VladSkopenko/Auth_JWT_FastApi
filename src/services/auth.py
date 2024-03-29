@@ -19,7 +19,7 @@ class Auth:
     def get_password_hash(self, password: str):
         return self.pwd_context.hash(password)
 
-    SECRET_KEY = "b77121a015a2399f6bde8eda4d771c3e"  # TODO прибрать в env файл
+    SECRET_KEY = "key"  # TODO прибрать в env файл
     ALGORITHM = "HS256"
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
