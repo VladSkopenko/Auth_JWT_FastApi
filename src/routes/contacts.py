@@ -4,14 +4,17 @@ from fastapi import APIRouter, HTTPException, Depends, status, Path
 from sqlalchemy.orm import Session
 
 from src.database.db import get_db
+from src.database.models import User
 from src.schemas.contact import ContactModel, ContactResponse
 from src.repository import contacts as repository_contacts
+from src.services.auth import auth_service
 
 router = APIRouter(prefix='/contacts', tags=["contacts"])
 
 
 @router.get("/search", response_model=list[ContactResponse])
-async def search_contacts(query: str, db: Session = Depends(get_db)):
+async def search_contacts(query: str, db: Session = Depends(get_db),
+                          current_user: User = Depends(auth_service.get_current_user)):
     contacts = await repository_contacts.search_contacts(query, db)
     return contacts
 
@@ -61,4 +64,3 @@ async def get_contact(
 @router.get("/contacts/upcoming_birthdays/", response_model=List[ContactModel])
 def get_upcoming_birthdays_list(db: Session = Depends(get_db)):
     return repository_contacts.get_upcoming_birthdays(db=db)
-
