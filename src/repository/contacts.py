@@ -1,90 +1,114 @@
-from typing import Type
-
-from sqlalchemy.orm import Session
-from src.database.models import Contact, User
-from src.schemas.contact import ContactModel
-from sqlalchemy import or_, func, select
-
 from datetime import datetime, timedelta
 
+from sqlalchemy import select, or_, extract, func
+from sqlalchemy.ext.asyncio import AsyncSession
 
-async def get_contacts(limit: int, offset: int, db: Session, current_user: User):
+from src.database.models import Contact, User
+from src.schemas.contact import ContactSchema, ContactUpdateSchema, ContactStatusUpdate
+
+
+async def get_contacts(limit: int, offset: int, db: AsyncSession, current_user: User):
     stmt = select(Contact).filter_by(user=current_user).offset(offset).limit(limit)
-    contact = db.execute(stmt)
+    contact = await db.execute(stmt)
     return contact.scalars().all()
 
 
-async def create_contact(body: ContactModel, db: Session, current_user: User) -> Contact:
-    contact = Contact(name=body.name,
-                      last_name=body.last_name,
-                      email=body.email,
-                      phone=body.phone,
-                      birthday=body.birthday,
-                      description=body.description,
-                      user=current_user)
-    db.add(contact)
-    db.commit()
-    db.refresh(contact)
-    return contact
-
-
-async def update_contact(contact_id: int, body: ContactModel, db: Session, current_user: User) -> Contact | None:
+async def get_contact(contact_id: int, db: AsyncSession, current_user: User):
     stmt = select(Contact).filter_by(id=contact_id, user=current_user)
-    result = db.execute(stmt)
-    contact = result.scalar_one_or_none()
-    if contact:
-        contact.name = body.name
-        contact.last_name = body.last_name
-        contact.email = body.email
-        contact.phone = body.phone
-        contact.birthday = body.birthday
-        contact.description = body.description
-        db.commit()
-        db.refresh(contact)
-    return contact
-
-
-async def delete_contact(contact_id: int, db: Session) -> None:
-    contact = db.query(Contact).filter(Contact.id == contact_id).first()
-    if contact:
-        db.delete(contact)
-        db.commit()
-    return contact
-
-
-async def get_contact(id: int, db: Session):
-    query = select(Contact).filter_by(id=id)
-    contact = db.execute(query)
+    contact = await db.execute(stmt)
     return contact.scalar_one_or_none()
 
 
-async def search_contacts(query: str, db: Session, current_user: User) -> list[Type[Contact]]:
-    contacts = db.query(Contact).filter_by(user=current_user).where(
+async def create_contact(body: ContactSchema, db: AsyncSession, current_user: User):
+    contact = Contact(**body.model_dump(exclude_unset=True), user=current_user)
+    db.add(contact)
+    await db.commit()
+    await db.refresh(contact)
+    return contact
+
+
+async def update_contact(contact_id: int, body: ContactUpdateSchema, db: AsyncSession, current_user: User):
+    stmt = select(Contact).filter_by(id=contact_id, user=current_user)
+    result = await db.execute(stmt)
+    contact = result.scalar_one_or_none()
+    if contact:
+        contact.name = body.name
+        contact.lastname = body.lastname
+        contact.email = body.email
+        contact.phone = body.phone
+        contact.birthday = body.birthday
+        contact.notes = body.notes
+        contact.favourite = body.favourite
+        await db.commit()
+        await db.refresh(contact)
+    return contact
+
+
+async def delete_contact(contact_id: int, db: AsyncSession, current_user: User):
+    stmt = select(Contact).filter_by(id=contact_id, user=current_user)
+    contact = await db.execute(stmt)
+    contact = contact.scalar_one_or_none()
+    if contact:
+        await db.delete(contact)
+        await db.commit()
+    return contact
+
+
+async def update_status_contact(contact_id: int, body: ContactStatusUpdate, db: AsyncSession, current_user: User):
+    stmt = select(Contact).filter_by(id=contact_id, user=current_user)
+    result = await db.execute(stmt)
+    contact = result.scalar_one_or_none()
+    if contact:
+        contact.favourite = body.favourite
+        await db.commit()
+        await db.refresh(contact)
+    return contact
+
+
+async def search_contacts(search: str, db: AsyncSession, current_user: User):
+    stmt = select(Contact).filter_by(user=current_user).where(or_(
+        Contact.name.ilike(f'%{search}%'),
+        Contact.lastname.ilike(f'%{search}%'),
+        Contact.email.ilike(f'%{search}%')
+    ))
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+
+async def get_birthday_contacts(days: int, db: AsyncSession, current_user: User):
+    today = datetime.now().date()
+    end_date = today + timedelta(days=days)
+
+    birthday_month = extract('month', Contact.birthday)
+    birthday_day = extract('day', Contact.birthday)
+
+    current_year_birthday = func.to_date(
+        func.concat(
+            func.to_char(today, 'YYYY'),
+            '-',
+            func.to_char(birthday_month, 'FM00'),
+            '-',
+            func.to_char(birthday_day, 'FM00')
+        ),
+        'YYYY-MM-DD'
+    )
+
+    next_year_birthday = func.to_date(
+        func.concat(
+            func.to_char(today + timedelta(days=365), 'YYYY'),
+            '-',
+            func.to_char(birthday_month, 'FM00'),
+            '-',
+            func.to_char(birthday_day, 'FM00')
+        ),
+        'YYYY-MM-DD'
+    )
+
+    stmt = select(Contact).filter_by(user=current_user).where(
         or_(
-            Contact.name.ilike(f"%{query}%"),
-            Contact.last_name.ilike(f"%{query}%"),
-            Contact.email.ilike(f"%{query}%"),
+            current_year_birthday.between(today, end_date),
+            next_year_birthday.between(today, end_date)
         )
-    ).all()
-    return contacts
-
-
-def get_upcoming_birthdays(db: Session):
-    today = datetime.now()
-    end_date = today + timedelta(days=7)
-
-    current_month = today.month
-    current_day = today.day
-
-    next_week_month = end_date.month
-    next_week_day = end_date.day
-
-    return db.query(Contact).filter(
-        (
-                (func.extract('month', Contact.birthday) == current_month) &
-                (func.extract('day', Contact.birthday) >= current_day)
-        ) | (
-                (func.extract('month', Contact.birthday) == next_week_month) &
-                (func.extract('day', Contact.birthday) <= next_week_day)
-        )
-    ).all()
+    )
+    result = await db.execute(stmt)
+    return result.scalars().all()
