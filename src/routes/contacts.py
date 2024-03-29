@@ -22,7 +22,7 @@ async def read_contacts(skip: int = 0, limit: int = 5, db: Session = Depends(get
     return contacts
 
 
-@router.post("/", response_model=ContactResponse)
+@router.post("/", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
 async def create_contact(body: ContactModel, db: Session = Depends(get_db)):
     return await repository_contacts.create_contact(body, db)
 
