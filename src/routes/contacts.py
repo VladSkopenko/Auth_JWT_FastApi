@@ -35,7 +35,7 @@ async def create_contact(body: ContactModel, db: Session = Depends(get_db),
 @router.put("/{contact_id}", response_model=ContactResponse)
 async def update_contact(body: ContactModel, contact_id: int, db: Session = Depends(get_db),
                          current_user: User = Depends(auth_service.get_current_user)):
-    contact = await repository_contacts.update_contact(contact_id, body, db)
+    contact = await repository_contacts.update_contact(contact_id, body, db, current_user)
     if contact is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
     return contact

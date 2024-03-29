@@ -28,8 +28,10 @@ async def create_contact(body: ContactModel, db: Session, current_user: User) ->
     return contact
 
 
-async def update_contact(contact_id: int, body: ContactModel, db: Session) -> Contact | None:
-    contact = db.query(Contact).filter(Contact.id == contact_id).first()
+async def update_contact(contact_id: int, body: ContactModel, db: Session, current_user: User) -> Contact | None:
+    stmt = select(Contact).filter_by(id=contact_id, user=current_user)
+    result = db.execute(stmt)
+    contact = result.scalar_one_or_none()
     if contact:
         contact.name = body.name
         contact.last_name = body.last_name
@@ -38,6 +40,7 @@ async def update_contact(contact_id: int, body: ContactModel, db: Session) -> Co
         contact.birthday = body.birthday
         contact.description = body.description
         db.commit()
+        db.refresh(contact)
     return contact
 
 
