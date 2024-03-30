@@ -31,8 +31,8 @@ class ContactResponse(BaseModel):
     birthday: date
     notes: str
     favourite: bool
-    created_at: datetime | None
-    updated_at: datetime | None
+    created_at: date | None
+    updated_at: date | None
     user: UserResponse | None
 
     class Config:
