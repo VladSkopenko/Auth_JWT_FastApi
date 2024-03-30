@@ -12,6 +12,7 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession, current_user: 
     contact = await db.execute(stmt)
     return contact.scalars().all()
 
+
 async def get_all_contacts(limit: int, offset: int, db: AsyncSession):
     stmt = select(Contact).offset(offset).limit(limit)
     contact = await db.execute(stmt)
