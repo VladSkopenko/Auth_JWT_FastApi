@@ -1,0 +1,6 @@
+docker compose up -d
+docker-compose down – зупинити і видалити контейнери, мережі і томи, створені командою docker-compose up.
+docker-compose ps – виведе список контейнерів, створених docker-compose up, а також їхній статус та іншу інформацію.
+docker-compose logs – перегляд логів контейнерів, створених docker-compose up.
+docker-compose exec <ім’я служби> <команда> – виконати команду в запущеному контейнері, створеному docker-compose up. Наприклад, docker-compose exec redis redis-cli запустить команду redis-cli в контейнері redis.
+docker-compose build – перебудувати образи, визначені у файлі docker-compose.yml. Це може бути корисно, якщо ви внесли зміни до своїх сервісів і хочете переконатися, що образи актуальні.
