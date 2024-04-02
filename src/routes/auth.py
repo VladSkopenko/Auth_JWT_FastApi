@@ -52,3 +52,15 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(get_
     refresh_token = await auth_service.create_refresh_token(data={"sub": email})
     await repository_users.update_token(user, refresh_token, db)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+
+@router.get('/confirmed_email/{token}')
+async def confirmed_email(token: str, db: AsyncSession = Depends(get_db)):
+    email = await auth_service.get_email_from_token(token)
+    user = await repository_users.get_user_by_email(email, db)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
+    if user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    await repository_users.confirmed_email(email, db)
+    return {"message": "Email confirmed"}
