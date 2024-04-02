@@ -2,9 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles
 from src.database.db import get_db
-from src.routes import contacts, auth
+from src.routes import contacts, auth, check_open
 
 app = FastAPI()
 
@@ -17,7 +17,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
+app.include_router(check_open.router, prefix="/api")
 app.include_router(auth.router, prefix='/api')
 app.include_router(contacts.router, prefix='/api')
 
