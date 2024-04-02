@@ -8,11 +8,11 @@ from src.services.auth import auth_service
 
 conf = ConnectionConfig(
     MAIL_USERNAME="skopil@meta.ua",
-    MAIL_PASSWORD="secretPassword",
-    MAIL_FROM=EmailStr("skopil@meta.ua"),
+    MAIL_PASSWORD="Mypasswordformeta1",
+    MAIL_FROM="skopil@meta.ua",
     MAIL_PORT=465,
     MAIL_SERVER="smtp.meta.ua",
-    MAIL_FROM_NAME="Desired Name",
+    MAIL_FROM_NAME="Skopenko 000 company",
     MAIL_STARTTLS=False,
     MAIL_SSL_TLS=True,
     USE_CREDENTIALS=True,
