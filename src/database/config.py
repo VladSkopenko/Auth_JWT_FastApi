@@ -1,5 +1,29 @@
-class Config:
-    DATABASE_URL = "postgresql+asyncpg://postgres:567234@localhost:5432/rest"
+from pydantic_settings import BaseSettings
+from pydantic import validators, ConfigDict, EmailStr, field_validator
 
 
-config = Config
+class Settings(BaseSettings):
+    DB_URL: str
+    SECRET_KEY_JWT: str
+    ALGORITHM: str = "HS256"
+    MAIL_USERNAME: EmailStr
+    MAIL_PASSWORD: str
+    MAIL_FROM: str
+    MAIL_PORT: int
+    MAIL_SERVER: str
+    REDIS_DOMAIN: str = "localhost"
+    REDIS_PORT: str
+    REDIS_PASSWORD: str
+
+    @field_validator("ALGORITHM")
+    @classmethod
+    def validate_algorithm(cls, v):
+        if v not in ["HS256", "HS512"]:
+            raise ValueError("Not like it")
+        return v
+
+    model_config = ConfigDict(env_file=".env",
+                              env_file_encoding="utf-8")
+
+
+config = Settings()
