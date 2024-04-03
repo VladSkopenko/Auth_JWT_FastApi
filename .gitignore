@@ -2,3 +2,4 @@
 postgres-data
 docker_compose_help.txt
 __pycache__
+.env

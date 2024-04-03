@@ -5,3 +5,4 @@ passlib~=1.7.4
 libgravatar~=1.0.4
 alembic~=1.13.1
 fastapi_mail
+redis
