@@ -5,7 +5,7 @@ from src.database.models import Role
 class UserSchema(BaseModel):
     username: str = Field(min_length=3, max_length=50)
     email: EmailStr
-    password: str = Field(min_length=6, max_length=8)
+    password: str = Field(min_length=2, max_length=8)
 
 
 class UserResponse(BaseModel):
