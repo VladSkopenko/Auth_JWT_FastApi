@@ -24,7 +24,7 @@ class DataBaseSessionManager:
             await session.close()
 
 
-sessionmanager = DataBaseSessionManager(config.DATABASE_URL)
+sessionmanager = DataBaseSessionManager(config.DB_URL)
 
 
 async def get_db():

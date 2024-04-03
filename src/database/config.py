@@ -11,19 +11,22 @@ class Settings(BaseSettings):
     MAIL_FROM: str
     MAIL_PORT: int
     MAIL_SERVER: str
+    MAIL_FROM_NAME: str
     REDIS_DOMAIN: str = "localhost"
-    REDIS_PORT: str
+    REDIS_PORT: int = 6379
     REDIS_PASSWORD: str
 
     @field_validator("ALGORITHM")
     @classmethod
     def validate_algorithm(cls, v):
         if v not in ["HS256", "HS512"]:
-            raise ValueError("Not like it")
+            raise ValueError("ALGORITHM must be HS256 or HS512")
         return v
 
-    model_config = ConfigDict(env_file=".env",
-                              env_file_encoding="utf-8")
+    class Config:
+        extra = "ignore"
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 config = Settings()
