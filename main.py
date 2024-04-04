@@ -7,8 +7,9 @@ from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 import redis.asyncio as redis
 from src.database.db import get_db
-from src.routes import contacts, auth, check_open
+from src.routes import contacts, auth, check_open, users
 from src.database.config import config
+
 app = FastAPI()
 
 origins = ["*"]
@@ -21,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
-
+app.include_router(users.router, prefix="/api")
 app.include_router(check_open.router, prefix="/api")
 app.include_router(auth.router, prefix='/api')
 app.include_router(contacts.router, prefix='/api')
