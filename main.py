@@ -1,4 +1,4 @@
-from fastapi import  Depends, HTTPException
+from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +11,8 @@ from typing import Callable
 import re
 
 from fastapi import FastAPI, Request, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from src.database.db import get_db
 from src.routes import contacts, auth, check_open, users
@@ -63,6 +64,7 @@ async def user_agent_ban_middleware(request: Request, call_next: Callable):
 
 
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
 app.include_router(users.router, prefix="/api")
 app.include_router(check_open.router, prefix="/api")
 app.include_router(auth.router, prefix='/api')
@@ -75,9 +77,12 @@ async def startup():
     await FastAPILimiter.init(r)
 
 
-@app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
-def root():
-    return {"message": "Contact Book"}
+template = Jinja2Templates(directory="src/templates")
+
+
+@app.get("/", response_class=HTMLResponse, dependencies=[Depends(RateLimiter(times=2, seconds=5))])
+def root(request: Request):
+    return template.TemplateResponse("index.html", context={"request": request})
 
 
 @app.get('/api/healthchecker')
