@@ -3,9 +3,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+import redis.asyncio as redis
 from src.database.db import get_db
 from src.routes import contacts, auth, check_open
-
+from src.database.config import config
 app = FastAPI()
 
 origins = ["*"]
@@ -24,7 +27,13 @@ app.include_router(auth.router, prefix='/api')
 app.include_router(contacts.router, prefix='/api')
 
 
-@app.get("/")
+@app.on_event("startup")
+async def startup():
+    r = await redis.Redis(host=config.REDIS_DOMAIN, port=config.REDIS_PORT, db=0, password=config.REDIS_PASSWORD)
+    await FastAPILimiter.init(r)
+
+
+@app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
 def root():
     return {"message": "Contact Book"}
 
