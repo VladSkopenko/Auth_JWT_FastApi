@@ -1,3 +1,5 @@
+import pickle
+
 import cloudinary.uploader
 from fastapi import APIRouter
 from fastapi import Depends
@@ -5,7 +7,7 @@ from fastapi import File
 from fastapi import UploadFile
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
-import pickle
+
 from src.database.config import config
 from src.database.db import get_db
 from src.database.models import User
@@ -50,3 +52,4 @@ async def update_avatar(
     auth_service.cache.set(user.email, pickle.dumps(user))
     auth_service.cache.expire(user.email, 300)
     return user
+

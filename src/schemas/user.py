@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Field
+from pydantic import SecretStr
 
 from src.database.models import Role
 
@@ -30,3 +31,12 @@ class TokenSchema(BaseModel):
 
 class RequestEmail(BaseModel):
     email: EmailStr
+
+
+class PasswordResetRequest(BaseModel):
+    token: str
+    new_password: SecretStr
+
+
+class PasswordReset(BaseModel):
+    message: str

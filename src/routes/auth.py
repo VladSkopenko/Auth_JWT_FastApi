@@ -15,8 +15,11 @@ from src.schemas.user import RequestEmail
 from src.schemas.user import TokenSchema
 from src.schemas.user import UserResponse
 from src.schemas.user import UserSchema
+from src.schemas.user import PasswordReset
+from src.schemas.user import PasswordResetRequest
 from src.services.auth import auth_service
 from src.services.email import send_email
+from src.services.email import send_reset_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 get_refresh_token = HTTPBearer()
@@ -122,4 +125,45 @@ async def request_email(
         background_tasks.add_task(
             send_email, user.email, user.username, str(request.base_url)
         )
-    return {"message": "Check your email for confirmation."}
+    return {"message": "Check your email."}
+
+
+@router.post("/reset-password/{token}")
+async def reset_password(
+    token: str,
+    password_reset_request: PasswordResetRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    email = await auth_service.get_email_from_token(token)
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired token"
+        )
+
+    hashed_password = auth_service.get_password_hash(
+        password_reset_request.new_password
+    )
+    await repository_users.reset_password(email, hashed_password, db)
+
+    return {"message": "Password reset successfully"}
+
+
+@router.get("/request-password")
+async def request_password(
+    email: str,
+    background_tasks: BackgroundTasks,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    user = await repository_users.get_user_by_email(email, db)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found with the provided email address",
+        )
+
+    background_tasks.add_task(
+        send_reset_password, user.email, user.username, str(request.base_url)
+    )
+    return {"message": "Check your email."}

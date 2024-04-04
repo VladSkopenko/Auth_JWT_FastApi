@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from libgravatar import Gravatar
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -47,3 +47,15 @@ async def update_avatar_url(email: str, url: str | None, db: AsyncSession) -> Us
     await db.commit()
     await db.refresh(user)
     return user
+
+
+async def reset_password(email: str, new_hashed_password: str, db: AsyncSession):
+    user = await get_user_by_email(email, db)
+    if user:
+        user.hashed_password = new_hashed_password
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+        return user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
