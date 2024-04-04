@@ -1,22 +1,29 @@
-from fastapi import Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter
-import redis.asyncio as redis
+import re
 from ipaddress import ip_address
 from typing import Callable
-import re
 
-from fastapi import FastAPI, Request, status
-from fastapi.responses import JSONResponse, HTMLResponse
+import redis.asyncio as redis
+from fastapi import Depends
+from fastapi import FastAPI
+from fastapi import HTTPException
+from fastapi import Request
+from fastapi import status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.db import get_db
-from src.routes import contacts, auth, check_open, users
 from src.database.config import config
+from src.database.db import get_db
+from src.routes import auth
+from src.routes import check_open
+from src.routes import contacts
+from src.routes import users
 
 ALLOWED_IPS = [ip_address('192.168.1.0'), ip_address('172.16.0.0'), ip_address("127.0.0.1")]
 banned_ips = [ip_address("190.235.111.156"), ip_address("82.220.71.77"), ip_address("45.100.28.227")]

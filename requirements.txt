@@ -8,3 +8,4 @@ fastapi_mail
 redis
 fastapi-limiter
 jinja2
+cloudinary

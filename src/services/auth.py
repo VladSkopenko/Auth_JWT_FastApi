@@ -1,17 +1,19 @@
-from datetime import timedelta, datetime
+from datetime import datetime
+from datetime import timedelta
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status
-from passlib.context import CryptContext
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import status
 from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from jose import JWTError
+from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
-from jose import JWTError, jwt
-
-
-from src.database.db import get_db
-from src.repository import users as repository_users
 
 from src.database.config import config
+from src.database.db import get_db
+from src.repository import users as repository_users
 
 
 class Auth:

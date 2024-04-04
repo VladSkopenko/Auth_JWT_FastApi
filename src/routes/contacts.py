@@ -1,10 +1,19 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Path, Query
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import Path
+from fastapi import Query
+from fastapi import status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
-from src.database.models import User, Role
+from src.database.models import Role
+from src.database.models import User
 from src.repository import contacts as repository_contact
-from src.schemas.contact import ContactSchema, ContactUpdateSchema, ContactResponse, ContactStatusUpdate
+from src.schemas.contact import ContactResponse
+from src.schemas.contact import ContactSchema
+from src.schemas.contact import ContactStatusUpdate
+from src.schemas.contact import ContactUpdateSchema
 from src.services.auth import auth_service
 from src.services.role import RoleAccess
 

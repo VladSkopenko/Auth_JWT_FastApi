@@ -1,10 +1,17 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 
-from sqlalchemy import select, or_, extract, func
+from sqlalchemy import extract
+from sqlalchemy import func
+from sqlalchemy import or_
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models import Contact, User
-from src.schemas.contact import ContactSchema, ContactUpdateSchema, ContactStatusUpdate
+from src.database.models import Contact
+from src.database.models import User
+from src.schemas.contact import ContactSchema
+from src.schemas.contact import ContactStatusUpdate
+from src.schemas.contact import ContactUpdateSchema
 
 
 async def get_contacts(limit: int, offset: int, db: AsyncSession, current_user: User):

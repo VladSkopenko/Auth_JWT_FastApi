@@ -1,7 +1,7 @@
 from fastapi import Depends
+from libgravatar import Gravatar
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from libgravatar import Gravatar
 
 from src.database.db import get_db
 from src.database.models import User

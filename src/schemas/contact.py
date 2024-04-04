@@ -1,6 +1,11 @@
-from datetime import date, datetime
+from datetime import date
+from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+
+from pydantic import BaseModel
+from pydantic import EmailStr
+from pydantic import Field
+
 from src.schemas.user import UserResponse
 
 

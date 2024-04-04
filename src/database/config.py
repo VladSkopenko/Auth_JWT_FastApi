@@ -1,5 +1,7 @@
-from pydantic import EmailStr, field_validator
+from pydantic import EmailStr
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     DB_URL: str
@@ -14,6 +16,9 @@ class Settings(BaseSettings):
     REDIS_DOMAIN: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_PASSWORD: str = None
+    CLOUDINARY_NAME: str
+    CLOUDINARY_API_KEY: int
+    CLOUDINARY_API_SECRET: str = "secret"
 
     @field_validator("ALGORITHM")
     @classmethod
