@@ -1,8 +1,18 @@
-from sqlalchemy import String, Date, Integer, ForeignKey, DateTime, func, Enum, Boolean
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.orm import DeclarativeBase
-from datetime import date
 import enum
+from datetime import date
+
+from sqlalchemy import Boolean
+from sqlalchemy import Date
+from sqlalchemy import DateTime
+from sqlalchemy import Enum
+from sqlalchemy import ForeignKey
+from sqlalchemy import func
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import relationship
 
 
 class Base(DeclarativeBase):

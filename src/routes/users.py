@@ -47,6 +47,6 @@ async def update_avatar(
         width=250, height=250, crop="fill", version=res.get("version")
     )
     user = await repository_users.update_avatar_url(user.email, res_url, db)
-    # auth_service.cache.set(user.email, pickle.dumps(user))
-    # auth_service.cache.expire(user.email, 300)
+    auth_service.cache.set(user.email, pickle.dumps(user))
+    auth_service.cache.expire(user.email, 300)
     return user
