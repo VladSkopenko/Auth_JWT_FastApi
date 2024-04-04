@@ -1,7 +1,8 @@
 from datetime import datetime
 from datetime import timedelta
 from typing import Optional
-
+import redis
+import pickle
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
@@ -20,6 +21,12 @@ class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     SECRET_KEY = config.SECRET_KEY_JWT
     ALGORITHM = config.ALGORITHM
+    cache = redis.Redis(
+        host=config.REDIS_DOMAIN,
+        port=config.REDIS_PORT,
+        db=0,
+        password=config.REDIS_PASSWORD,
+    )
 
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -98,9 +105,20 @@ class Auth:
         except JWTError as e:
             raise credentials_exception
 
-        user = await repository_users.get_user_by_email(email, db)
+        user_hash: str = str(email)
+
+        user = self.cache.get(user_hash)
+
         if user is None:
-            raise credentials_exception
+            print("User from database")
+            user = await repository_users.get_user_by_email(email, db)
+            if user is None:
+                raise credentials_exception
+            self.cache.set(user_hash, pickle.dumps(user))
+            self.cache.expire(user_hash, 300)
+        else:
+            print("User from cache")
+            user = pickle.loads(user)
         return user
 
     def create_email_token(self, data: dict):
