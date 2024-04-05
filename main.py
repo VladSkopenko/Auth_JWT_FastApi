@@ -1,16 +1,10 @@
-import re
-from ipaddress import ip_address
-from typing import Callable
-
 import redis.asyncio as redis
 from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi import Request
-from fastapi import status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi_limiter import FastAPILimiter
@@ -20,12 +14,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.config import config
 from src.database.db import get_db
+from src.middlewares import ip_middleware
+from src.middlewares import user_agent_middleware
 from src.routes import auth
 from src.routes import check_open
 from src.routes import contacts
 from src.routes import users
-from src.middlewares import ip_middleware
-from src.middlewares import user_agent_middleware
 
 app = FastAPI()
 
