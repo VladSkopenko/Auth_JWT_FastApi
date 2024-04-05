@@ -62,4 +62,3 @@ async def send_reset_password(email: EmailStr, username: str, host: str):
         await fm.send_message(message, template_name="reset_password.html")
     except ConnectionErrors as err:
         print(err)
-

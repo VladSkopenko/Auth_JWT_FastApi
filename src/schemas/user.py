@@ -12,6 +12,11 @@ class UserSchema(BaseModel):
     password: str = Field(min_length=2, max_length=8)
 
 
+class UserPassword(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=2, max_length=8)
+
+
 class UserResponse(BaseModel):
     id: int = 1
     username: str

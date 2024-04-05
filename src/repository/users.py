@@ -52,10 +52,10 @@ async def update_avatar_url(email: str, url: str | None, db: AsyncSession) -> Us
 async def reset_password(email: str, new_hashed_password: str, db: AsyncSession):
     user = await get_user_by_email(email, db)
     if user:
-        user.hashed_password = new_hashed_password
-        db.add(user)
+        user.password = new_hashed_password
         await db.commit()
         await db.refresh(user)
         return user
     else:
         raise HTTPException(status_code=404, detail="User not found")
+
