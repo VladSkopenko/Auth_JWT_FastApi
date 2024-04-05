@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends
+from fastapi import HTTPException
 from libgravatar import Gravatar
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
