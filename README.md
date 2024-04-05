@@ -1,5 +1,6 @@
-1)Docker compose up -d
-Старт редіс та постгрес
-2)alembic upgrade head
-Міграція до баз даних
-3)Profit
+### Шаги для запуска приложения:
+
+1. **Docker Compose Up:**
+   Запустите Redis и PostgreSQL с помощью Docker Compose:
+   ```bash
+   docker-compose up -d
