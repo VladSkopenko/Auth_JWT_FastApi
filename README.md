@@ -1,6 +1,6 @@
-### Шаги для запуска приложения:
+### Кроки  для запуска застосунка:
 
 1. **Docker Compose Up:**
-   Запустите Redis и PostgreSQL с помощью Docker Compose:
+   Запустити Redis и PostgreSQL с допомогою Docker Compose:
    ```bash
    docker-compose up -d
