@@ -1,18 +1,12 @@
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Field
-from pydantic import SecretStr
 
 from src.database.models import Role
 
 
 class UserSchema(BaseModel):
     username: str = Field(min_length=3, max_length=50)
-    email: EmailStr
-    password: str = Field(min_length=2, max_length=8)
-
-
-class UserPassword(BaseModel):
     email: EmailStr
     password: str = Field(min_length=2, max_length=8)
 
@@ -36,12 +30,3 @@ class TokenSchema(BaseModel):
 
 class RequestEmail(BaseModel):
     email: EmailStr
-
-
-class PasswordResetRequest(BaseModel):
-    token: str
-    new_password: SecretStr
-
-
-class PasswordReset(BaseModel):
-    message: str

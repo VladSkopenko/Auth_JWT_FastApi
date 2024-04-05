@@ -15,11 +15,10 @@ from src.schemas.user import RequestEmail
 from src.schemas.user import TokenSchema
 from src.schemas.user import UserResponse
 from src.schemas.user import UserSchema
-from src.schemas.user import UserPassword
-from src.schemas.user import PasswordResetRequest
+
 from src.services.auth import auth_service
 from src.services.email import send_email
-from src.services.email import send_reset_password
+
 from src.database.models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -129,33 +128,18 @@ async def request_email(
     return {"message": "Check your email."}
 
 
-# @router.patch(
-#     "/reset_password", response_model=UserResponse, status_code=status.HTTP_200_OK
-# )
-# async def reset_password(
-#     body: UserSchema,
-#     bt: BackgroundTasks,
-#     request: Request,
-#     db: AsyncSession = Depends(get_db),
-# ):
-#     exist_user = await repository_users.get_user_by_email(body.email, db)
-#     if not exist_user:
-#         raise HTTPException(
-#             status_code=status.HTTP_409_CONFLICT, detail="Account not found"
-#         )
-#     body.password = auth_service.get_password_hash(body.password)
-#     update_user = await repository_users.reset_password(body.email, body.password, db)
-#     bt.add_task(send_reset_password, update_user.email, update_user.username, str(request.base_url))
-#     return update_user
 @router.patch(
     "/reset_pass",
     response_model=UserResponse,
 )
 async def reset_password(
     new_password: str,
+    bt: BackgroundTasks,
+    request: Request,
     user: User = Depends(auth_service.get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     hashed_password = auth_service.get_password_hash(new_password)
     user = await repository_users.reset_password(user.email, hashed_password, db)
+    bt.add_task(send_email, user.email, user.username, str(request.base_url))
     return user
