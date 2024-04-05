@@ -8,3 +8,7 @@
    Виконати міграцію:
    ```bash
    alembic upgrade head
+3. **Start server:**
+   Запустити сервер:
+   ```bash
+   uvicorn main:app --reload
