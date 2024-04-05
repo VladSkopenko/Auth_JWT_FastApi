@@ -4,3 +4,7 @@
    Запустити Redis и PostgreSQL с допомогою Docker Compose:
    ```bash
    docker-compose up -d
+2. **Alembic upgrade head:**
+   Виконати міграцію:
+   ```bash
+   alembic upgrade head
