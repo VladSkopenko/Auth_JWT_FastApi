@@ -14,15 +14,15 @@ Welcome to AddressBook's documentation!
 AddressBook Main
 ================
 
-.. automodule::main
-  :members:
-  :undoc-members:
-  :show-inheritance:
+.. automodule:: main
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 AddressBook database Config
 ===========================
-.. automodule::src.database.config
+.. automodule:: src.database.config
   :members:
   :undoc-members:
   :show-inheritance:
@@ -30,7 +30,7 @@ AddressBook database Config
 
 AddressBook database Db
 =======================
-.. automodule::src.database.db
+.. automodule:: src.database.db
   :members:
   :undoc-members:
   :show-inheritance:
@@ -38,7 +38,7 @@ AddressBook database Db
 
 AddressBook middlewares Ip_middleware
 =====================================
-.. automodule::src.middlewares.ip_middleware
+.. automodule:: src.middlewares.ip_middleware
   :members:
   :undoc-members:
   :show-inheritance:
@@ -46,7 +46,7 @@ AddressBook middlewares Ip_middleware
 
 AddressBook middlewares User_agent_middleware
 =============================================
-.. automodule::src.middlewares.user_agent_middleware
+.. automodule:: src.middlewares.user_agent_middleware
   :members:
   :undoc-members:
   :show-inheritance:
@@ -54,7 +54,7 @@ AddressBook middlewares User_agent_middleware
 
 AddressBook repository Contacts
 ===============================
-.. automodule::src.repository.contacts
+.. automodule:: src.repository.contacts
   :members:
   :undoc-members:
   :show-inheritance:
@@ -62,7 +62,7 @@ AddressBook repository Contacts
 
 AddressBook repository Users
 ============================
-.. automodule::src.repository.users
+.. automodule:: src.repository.users
   :members:
   :undoc-members:
   :show-inheritance:
@@ -70,7 +70,7 @@ AddressBook repository Users
 
 AddressBook routes Auth
 =======================
-.. automodule::src.routes.auth
+.. automodule:: src.routes.auth
   :members:
   :undoc-members:
   :show-inheritance:
@@ -78,7 +78,7 @@ AddressBook routes Auth
 
 AddressBook routes Check_open
 =============================
-.. automodule::src.routes.check_open
+.. automodule:: src.routes.check_open
   :members:
   :undoc-members:
   :show-inheritance:
@@ -86,7 +86,7 @@ AddressBook routes Check_open
 
 AddressBook routes Contacts
 ===========================
-.. automodule::src.routes.contacts
+.. automodule:: src.routes.contacts
   :members:
   :undoc-members:
   :show-inheritance:
@@ -94,7 +94,7 @@ AddressBook routes Contacts
 
 AddressBook routes Users
 ========================
-.. automodule::src.routes.users
+.. automodule:: src.routes.users
   :members:
   :undoc-members:
   :show-inheritance:
@@ -102,7 +102,7 @@ AddressBook routes Users
 
 AddressBook services Auth
 =========================
-.. automodule::src.services.auth
+.. automodule:: src.services.auth
   :members:
   :undoc-members:
   :show-inheritance:
@@ -110,7 +110,7 @@ AddressBook services Auth
 
 AddressBook services Email
 ==========================
-.. automodule::src.services.email
+.. automodule:: src.services.email
   :members:
   :undoc-members:
   :show-inheritance:
@@ -118,7 +118,7 @@ AddressBook services Email
 
 AddressBook services Role
 =========================
-.. automodule::src.services.role
+.. automodule:: src.services.role
   :members:
   :undoc-members:
   :show-inheritance:
