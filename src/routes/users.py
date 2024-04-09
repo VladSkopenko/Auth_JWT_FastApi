@@ -53,13 +53,17 @@ async def update_avatar(
     db: AsyncSession = Depends(get_db),
 ):
     """
-    The update_avatar function is used to update the avatar of a user.
+    Updates the avatar of a user.
 
-    :param file: UploadFile: Get the file from the request
-    :param user: User: Get the current user from the database
-    :param db: AsyncSession: Get a database session
-    :param : Get the current user
-    :return: The updated user
+    This function takes in three parameters:
+    - file (UploadFile): The file to update the avatar with, obtained from the request.
+    - user (User): The current user obtained from the database.
+    - db (AsyncSession): The database session.
+
+    :param file: UploadFile: The file to update the avatar with.
+    :param user: User: The current user obtained from the database.
+    :param db: AsyncSession: The database session.
+    :return: The updated user.
     :doc-author: Trelent
     """
     public_id = f"PyCourse/{user.email}"

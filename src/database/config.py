@@ -4,20 +4,20 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    DB_URL: str
-    SECRET_KEY_JWT: str
+    DB_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
+    SECRET_KEY_JWT: str = "123213213123fgedgfdg"
     ALGORITHM: str = "HS256"
-    MAIL_USERNAME: EmailStr
-    MAIL_PASSWORD: str
-    MAIL_FROM: str
-    MAIL_PORT: int
-    MAIL_SERVER: str
-    MAIL_FROM_NAME: str
+    MAIL_USERNAME: EmailStr = "skopil123@meta.ua"
+    MAIL_PASSWORD: str = "s1111"
+    MAIL_FROM: str = "skopil123@meta.ua"
+    MAIL_PORT: int = 465
+    MAIL_SERVER: str = "smtp.meta.ua"
+    MAIL_FROM_NAME: str = "example"
     REDIS_DOMAIN: str = "localhost"
     REDIS_PORT: int = 6379
-    REDIS_PASSWORD: str = None
-    CLOUDINARY_NAME: str
-    CLOUDINARY_API_KEY: int
+    REDIS_PASSWORD: str = "None"
+    CLOUDINARY_NAME: str = "name"
+    CLOUDINARY_API_KEY: int = 568222682695474123123
     CLOUDINARY_API_SECRET: str = "secret"
 
     @field_validator("ALGORITHM")

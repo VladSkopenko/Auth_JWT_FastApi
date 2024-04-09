@@ -42,6 +42,7 @@ async def signup(
     :param : Get the user's email
     :return: A userschema object
     :doc-author: Trelent
+
     """
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
@@ -65,6 +66,7 @@ async def login(
     :param db: AsyncSession: Get the database session
     :return: A dictionary with an access token, a refresh token and the type of token
     :doc-author: Trelent
+
     """
     user = await repository_users.get_user_by_email(body.username, db)
     if user is None:
@@ -104,6 +106,7 @@ async def refresh_token(
     :param : Get the user's email from the token
     :return: A new access_token and refresh_token
     :doc-author: Trelent
+
     """
     token = credentials.credentials
     email = await auth_service.decode_refresh_token(token)
@@ -136,6 +139,7 @@ async def confirmed_email(token: str, db: AsyncSession = Depends(get_db)):
     :param db: AsyncSession: Get the database session
     :return: A message to the user that their email has been confirmed
     :doc-author: Trelent
+
     """
     email = await auth_service.get_email_from_token(token)
     user = await repository_users.get_user_by_email(email, db)
@@ -170,6 +174,7 @@ async def request_email(
     :param : Send the email to the user
     :return: A message to the user
     :doc-author: Trelent
+
     """
     user = await repository_users.get_user_by_email(body.email, db)
 
@@ -204,6 +209,7 @@ async def reset_password(
     :param : Get the current user
     :return: The user object
     :doc-author: Trelent
+
     """
     hashed_password = auth_service.get_password_hash(new_password)
     user = await repository_users.reset_password(user.email, hashed_password, db)

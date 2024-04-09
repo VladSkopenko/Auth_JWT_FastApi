@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import redis.asyncio as redis
 from fastapi import Depends
 from fastapi import FastAPI
@@ -36,8 +38,10 @@ app.middleware("http")(ip_middleware.limit_access_by_ip)
 app.middleware("http")(ip_middleware.ban_ips)
 app.middleware("http")(user_agent_middleware.user_agent_ban_middleware)
 
+BASE_DIR = Path(__file__).parent
+directory = BASE_DIR.joinpath("src").joinpath("static")
+app.mount("/static", StaticFiles(directory=directory), name="static")
 
-app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.include_router(users.router, prefix="/api")
 app.include_router(check_open.router, prefix="/api")
