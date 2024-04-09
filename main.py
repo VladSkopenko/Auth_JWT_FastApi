@@ -47,6 +47,14 @@ app.include_router(contacts.router, prefix="/api")
 
 @app.on_event("startup")
 async def startup():
+    """
+    The startup function is called when the application starts up.
+    It's a good place to initialize things that are needed by your app,
+    like database connections or external APIs.
+
+    :return: A dictionary with a key called &quot;app&quot;
+    :doc-author: Trelent
+    """
     redi = await redis.Redis(
         host=config.REDIS_DOMAIN,
         port=config.REDIS_PORT,
@@ -65,11 +73,30 @@ template = Jinja2Templates(directory="src/templates")
     dependencies=[Depends(RateLimiter(times=2, seconds=5))],
 )
 def root(request: Request):
+    """
+    The root function is the entry point for the web application.
+    It returns a TemplateResponse object, which contains an HTML template and data to be rendered by Jinja2.
+    The template file is located in `templates/index.html`.
+
+
+    :param request: Request: Pass the request object into the function
+    :return: A templateresponse object
+    :doc-author: Trelent
+    """
     return template.TemplateResponse("index.html", context={"request": request})
 
 
 @app.get("/api/healthchecker")
 async def healthchecker(db: AsyncSession = Depends(get_db)):
+    """
+    The healthchecker function is a simple function that checks the health of the database.
+    It does this by executing a SQL query and checking if it returns any results. If it doesn't,
+    then we know something is wrong with our database connection.
+
+    :param db: AsyncSession: Inject the database session into the function
+    :return: A dictionary with a message
+    :doc-author: Trelent
+    """
     try:
         result = await db.execute(text("SELECT 1"))
         result = result.fetchone()
