@@ -23,6 +23,17 @@ class Settings(BaseSettings):
     @field_validator("ALGORITHM")
     @classmethod
     def validate_algorithm(cls, v):
+        """
+        The validate_algorithm function is a helper function that validates the algorithm used to sign the JWT.
+        The validate_algorithm function takes in one argument, cls, which is an instance of the Auth0 class.
+        The validate_algorithm function also takes in another argument, v, which represents a string value for
+        the algorithm used to sign the JWT.
+
+        :param cls: Pass the class object to the function
+        :param v: Pass the value of the algorithm that is being validated
+        :return: The value of the argument v
+        :doc-author: Trelent
+        """
         if v not in ["HS256", "HS512"]:
             raise ValueError("ALGORITHM must be HS256 or HS512")
         return v

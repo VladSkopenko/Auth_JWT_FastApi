@@ -30,6 +30,15 @@ cloudinary.config(
     dependencies=[Depends(RateLimiter(times=2, seconds=5))],
 )
 async def get_current_user(user: User = Depends(auth_service.get_current_user)):
+    """
+    The get_current_user function is a dependency that will be used by the
+        get_current_active_user function. It uses the auth service to retrieve
+        information about the current user, and returns it as a User object.
+
+    :param user: User: Pass the user object to the function
+    :return: The user object of the currently logged in user
+    :doc-author: Trelent
+    """
     return user
 
 
@@ -43,6 +52,16 @@ async def update_avatar(
     user: User = Depends(auth_service.get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    The update_avatar function is used to update the avatar of a user.
+
+    :param file: UploadFile: Get the file from the request
+    :param user: User: Get the current user from the database
+    :param db: AsyncSession: Get a database session
+    :param : Get the current user
+    :return: The updated user
+    :doc-author: Trelent
+    """
     public_id = f"PyCourse/{user.email}"
     res = cloudinary.uploader.upload(file.file, public_id=public_id, owerite=True)
     res_url = cloudinary.CloudinaryImage(public_id).build_url(
@@ -52,4 +71,3 @@ async def update_avatar(
     auth_service.cache.set(user.email, pickle.dumps(user))
     auth_service.cache.expire(user.email, 300)
     return user
-

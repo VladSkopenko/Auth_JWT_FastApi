@@ -1,0 +1,2 @@
+1)sphinx-quickstart docs
+2).\make.bat html
