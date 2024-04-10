@@ -10,9 +10,12 @@ from src.repository.contacts import get_all_contacts
 from src.repository.contacts import get_contact
 from src.repository.contacts import get_contacts
 from src.repository.contacts import create_contact
+from src.repository.contacts import update_contact
+from src.repository.contacts import delete_contact
 
 
 from src.schemas.contact import ContactSchema
+from src.schemas.contact import ContactUpdateSchema
 
 
 class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
@@ -72,6 +75,41 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.assertIsInstance(result, type(contact))
         self.assertEqual(body.name, contact.name)
         self.assertEqual(body.email, contact.email)
+
+    async def test_update_contact(self):
+        body = ContactUpdateSchema(
+            name="new",
+            lastname="test2",
+            email="test@example.com",
+            phone="123456789",
+            birthday="2000-01-01",
+            notes="Some notes",
+            favourite=True,
+        )
+        mocked_contact = MagicMock()
+        mocked_contact.scalar_one_or_none.return_value = Contact(
+            id=1,
+            name="new",
+            lastname="test2",
+            email="test@example.com",
+            phone="123456789",
+            birthday="2000-01-01",
+            notes="Some notes",
+            favourite=True,
+        )
+        self.session.execute.return_value = mocked_contact
+        result = await update_contact(1, body, self.session, self.user)
+        self.assertIsInstance(result, Contact)
+
+    async def test_delete_contact(self):
+        mocked_contact = MagicMock()
+        mocked_contact.scalar_one_or_none.return_value = Contact(id=1, name="test")
+        self.session.execute.return_value = mocked_contact
+        result = await delete_contact(1, self.session, self.user)
+        self.session.delete.assert_called_once()
+        self.session.commit.assert_called_once()
+        self.session.execute.assert_called_once()
+        self.assertIsInstance(result, Contact)
 
 
 if __name__ == "__main__":

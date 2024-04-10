@@ -18,7 +18,7 @@ class UserResponse(BaseModel):
     avatar: str
     role: Role
 
-    model_config = ConfigDict(from_attributes = True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TokenSchema(BaseModel):
