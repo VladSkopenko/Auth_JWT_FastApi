@@ -5,6 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Field
+from pydantic import ConfigDict
 
 from src.schemas.user import UserResponse
 
@@ -40,5 +41,6 @@ class ContactResponse(BaseModel):
     updated_at: datetime | None
     user: UserResponse | None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+
+

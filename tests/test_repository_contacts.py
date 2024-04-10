@@ -1,17 +1,18 @@
-import os
-import sys
 import unittest
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
-
-sys.path.append(os.path.abspath('..'))
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import Contact
 from src.database.models import User
 from src.repository.contacts import get_all_contacts
+from src.repository.contacts import get_contact
 from src.repository.contacts import get_contacts
+from src.repository.contacts import create_contact
+
+
+from src.schemas.contact import ContactSchema
 
 
 class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
@@ -47,6 +48,23 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.session.execute.return_value = mocked_contacts
         result = await get_contacts(limit, offset, self.session, self.user)
         self.assertEqual(result, contacts)
+
+    async def test_get_contact(self):
+        id_ = 1
+        contact = Contact(id=1, name="test", lastname="test", user=self.user)
+        mocked_contact = MagicMock()
+        mocked_contact.scalar_one_or_none.return_value = contact
+        self.session.execute.return_value = mocked_contact
+        result = await get_contact(id_, self.session, self.user)
+        self.assertEqual(result, contact)
+
+    async def test_create_contact(self):
+        body = ContactSchema(name="test", lastname="test2")
+        contact = Contact(**body.model_dump())
+        result = await create_contact(body, self.session, self.user)
+
+        self.assertEqual(body.name, contact.name)
+
 
 
 if __name__ == "__main__":

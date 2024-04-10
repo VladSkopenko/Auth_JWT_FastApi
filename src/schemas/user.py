@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from pydantic import EmailStr
 from pydantic import Field
-
+from pydantic import ConfigDict
 from src.database.models import Role
 
 
@@ -18,8 +18,7 @@ class UserResponse(BaseModel):
     avatar: str
     role: Role
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes = True)
 
 
 class TokenSchema(BaseModel):

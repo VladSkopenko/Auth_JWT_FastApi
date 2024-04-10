@@ -9,3 +9,4 @@ redis
 fastapi-limiter
 jinja2
 cloudinary
+pytest

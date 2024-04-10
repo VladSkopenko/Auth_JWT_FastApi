@@ -28,8 +28,8 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession, current_user: 
     :doc-author: Trelent
     """
     stmt = select(Contact).filter_by(user=current_user).offset(offset).limit(limit)
-    contact = await db.execute(stmt)
-    return contact.scalars().all()
+    contacts = await db.execute(stmt)
+    return contacts.scalars().all()
 
 
 async def get_all_contacts(limit: int, offset: int, db: AsyncSession):
