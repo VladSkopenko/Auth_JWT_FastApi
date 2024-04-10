@@ -1,20 +1,22 @@
 import unittest
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
-
+from datetime import datetime, timedelta, date
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import Contact
 from src.database.models import User
+from src.repository.contacts import create_contact
+from src.repository.contacts import delete_contact
 from src.repository.contacts import get_all_contacts
 from src.repository.contacts import get_contact
 from src.repository.contacts import get_contacts
-from src.repository.contacts import create_contact
 from src.repository.contacts import update_contact
-from src.repository.contacts import delete_contact
-
-
+from src.repository.contacts import update_status_contact
+from src.repository.contacts import search_contacts
+from src.repository.contacts import get_birthday_contacts
 from src.schemas.contact import ContactSchema
+from src.schemas.contact import ContactStatusUpdate
 from src.schemas.contact import ContactUpdateSchema
 
 
@@ -114,6 +116,42 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.session.commit.assert_called_once()
         self.session.execute.assert_called_once()
         self.assertIsInstance(result, Contact)
+
+    async def test_update_status_contact(self):
+        body = ContactStatusUpdate(favourite=True)
+
+        mocked_contact = MagicMock()
+        mocked_contact.scalar_one_or_none.return_value = Contact(
+            id=1,
+            name="new",
+            lastname="test2",
+            email="test@example.com",
+            phone="123456789",
+            birthday="2000-01-01",
+            notes="Some notes",
+            favourite=True,
+        )
+        self.session.execute.return_value = mocked_contact
+        result = await update_status_contact(1, body, self.session, self.user)
+        self.session.commit.assert_called_once()
+        self.session.refresh.assert_called_once()
+        self.assertIsInstance(result, Contact)
+
+    async def test_search_contacts(self):
+        contacts = [
+            Contact(id=1, name="test", lastname="test", user=self.user),
+            Contact(id=2, name="test2", lastname="test2", user=self.user),
+        ]
+        mocked_contacts = MagicMock()
+        mocked_contacts.scalars.return_value.all.return_value = contacts
+        self.session.execute.return_value = mocked_contacts
+        result = await search_contacts("test", self.session, self.user)
+        self.assertEqual(result, contacts)
+
+    async def test_get_birthday_contacts(self):
+        ...
+
+
 
 
 if __name__ == "__main__":
