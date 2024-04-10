@@ -75,6 +75,8 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.assertIsInstance(result, type(contact))
         self.assertEqual(body.name, contact.name)
         self.assertEqual(body.email, contact.email)
+        self.session.refresh.assert_called_once()
+        self.session.commit.assert_called_once()
 
     async def test_update_contact(self):
         body = ContactUpdateSchema(
@@ -100,6 +102,8 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.session.execute.return_value = mocked_contact
         result = await update_contact(1, body, self.session, self.user)
         self.assertIsInstance(result, Contact)
+        self.session.refresh.assert_called_once()
+        self.session.commit.assert_called_once()
 
     async def test_delete_contact(self):
         mocked_contact = MagicMock()
