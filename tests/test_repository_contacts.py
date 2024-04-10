@@ -59,12 +59,19 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, contact)
 
     async def test_create_contact(self):
-        body = ContactSchema(name="test", lastname="test2")
-        contact = Contact(**body.model_dump())
+        body = ContactSchema(
+            name="test",
+            lastname="test2",
+            email="test@example.com",
+            phone="123456789",
+            birthday="2000-01-01",
+            notes="Some notes",
+        )
+        contact = Contact(**body.model_dump(exclude_unset=True), user=self.user)
         result = await create_contact(body, self.session, self.user)
-
+        self.assertIsInstance(result, type(contact))
         self.assertEqual(body.name, contact.name)
-
+        self.assertEqual(body.email, contact.email)
 
 
 if __name__ == "__main__":
