@@ -1,4 +1,4 @@
-from pydantic import EmailStr
+from pydantic import EmailStr, ConfigDict
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
@@ -37,6 +37,7 @@ class Settings(BaseSettings):
         if v not in ["HS256", "HS512"]:
             raise ValueError("ALGORITHM must be HS256 or HS512")
         return v
+
 
     class Config:
         extra = "ignore"

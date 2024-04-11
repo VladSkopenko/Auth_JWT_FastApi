@@ -31,23 +31,7 @@ TestingSessionLocal = async_sessionmaker(
 
 @pytest.fixture(scope="module", autouse=True)
 def init_models_wrap():
-    """
-    The init_models_wrap function is used to initialize the database with a test user.
-    It will drop all tables and recreate them, then add a test user to the database.
-
-
-    :return: A tuple of the test_user and the current_user
-    :doc-author: Trelent
-    """
-
     async def init_models():
-        """
-        The init_models function is used to initialize the database with a test user.
-        It will drop all tables and recreate them, then add a test user to the database.
-
-        :return: A tuple of the test_user and the current_user
-        :doc-author: Trelent
-        """
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
@@ -71,7 +55,8 @@ def client():
     """
     The client function is a fixture that will be called once per test function.
     It returns a TestClient instance, which provides an API to make HTTP requests.
-    The client can also be used as an asynchronous context manager, in which case it will close the session after exiting the block.
+    The client can also be used as an asynchronous context manager, in which case it will close the session after
+    exiting the block.
 
     :return: A test client, which is a python object that acts like your application
     :doc-author: Trelent
@@ -97,7 +82,6 @@ def client():
             await session.close()
 
     app.dependency_overrides[get_db] = override_get_db
-
     yield TestClient(app)
 
 
