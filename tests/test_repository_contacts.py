@@ -149,8 +149,32 @@ class TestAsyncContacts(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, contacts)
 
     async def test_get_birthday_contacts(self):
-        ...
+        today = datetime.now().date()
+        days = 7
+        contacts = [
+            Contact(
+                name="John",
+                lastname="Doe",
+                birthday=today + timedelta(days=days),
+                user=self.user,
+            ),
+            Contact(
+                name="Jane",
+                lastname="Smith",
+                birthday=today + timedelta(days=days),
+                user=self.user,
+            ),
+        ]
 
+        mocked_contacts = MagicMock()
+        mocked_contacts.scalars.return_value.all.return_value = contacts
+        self.session.execute.return_value = mocked_contacts
+        result_days = await get_birthday_contacts(days, self.session, self.user)
+        self.assertEqual(result_days, contacts)
+        if len(result_days) >= 2:
+            self.assertEqual(result_days[0].user, result_days[1].user)
+        for res in result_days:
+            self.assertTrue((res.birthday - today).days <= days)
 
 
 
