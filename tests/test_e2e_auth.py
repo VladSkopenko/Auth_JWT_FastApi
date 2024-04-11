@@ -10,7 +10,6 @@ user_data = {
 app.user_middleware = []
 
 def test_signup(client, monkeypatch):
-    client.base_url = "http://192.0.2.0"
     # Працюэ лише якщо ігнорити мідлвари
     mock_send_email = MagicMock()
     monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
