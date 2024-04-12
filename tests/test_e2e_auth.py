@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock
-from src.conf.messages import ACCOUNT_EXIST
+from src.conf import messages
 from main import app
 from datetime import datetime
 import pytest
@@ -36,4 +36,4 @@ def test_repeat_signup(client, monkeypatch):
     response = client.post("api/auth/signup", json=user_data)
     assert response.status_code == 409, response.text
     data = response.json()
-    assert data["detail"] == ACCOUNT_EXIST
+    assert data["detail"] == messages.ACCOUNT_EXIST
