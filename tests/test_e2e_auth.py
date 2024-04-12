@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock
 from src.conf.messages import ACCOUNT_EXIST
 from main import app
+from datetime import datetime
 import pytest
 from fastapi import HTTPException, status
+
 
 user_data = {
     "username": "testauth",
@@ -12,7 +14,7 @@ user_data = {
 app.user_middleware = []
 
 
-def test_signup(client, monkeypatch):
+def test_signup(client, monkeypatch, log):
     # Працюэ лише якщо ігнорити мідлвари
     mock_send_email = MagicMock()
     monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
@@ -21,6 +23,7 @@ def test_signup(client, monkeypatch):
     data = response.json()
     assert data["username"] == user_data["username"]
     assert data["email"] == user_data["email"]
+    log.write(f"{datetime.now():%Y-%m-%d %H:%M:%S} - {client} is register successfully\n")
     assert "password" not in data
     assert "avatar" in data
 

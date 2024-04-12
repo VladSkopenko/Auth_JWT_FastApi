@@ -1,5 +1,5 @@
 import asyncio
-
+import os
 import pytest
 import pytest_asyncio
 from fastapi.testclient import TestClient
@@ -27,6 +27,14 @@ engine = create_async_engine(
 TestingSessionLocal = async_sessionmaker(
     autocommit=False, autoflush=False, bind=engine, expire_on_commit=False
 )
+
+
+@pytest.fixture
+def log(request):
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    with open(f"logs/{request.node.name}.log", mode="a", encoding="utf-8") as log:
+        yield log
 
 
 @pytest.fixture(scope="module", autouse=True)
