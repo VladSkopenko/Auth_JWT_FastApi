@@ -11,3 +11,4 @@ jinja2
 cloudinary
 pytest
 pytest-asyncio-0.23.6
+httpx

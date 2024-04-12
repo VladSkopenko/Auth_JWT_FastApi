@@ -14,7 +14,7 @@ from jose import JWTError
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.config import config
+from src.conf.config import config
 from src.database.db import get_db
 from src.repository import users as repository_users
 

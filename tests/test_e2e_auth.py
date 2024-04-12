@@ -1,6 +1,8 @@
 from unittest.mock import MagicMock
-from src.middlewares.ip_middleware import ban_ips
+from src.conf.messages import ACCOUNT_EXIST
 from main import app
+import pytest
+from fastapi import HTTPException, status
 
 user_data = {
     "username": "testauth",
@@ -8,6 +10,7 @@ user_data = {
     "password": "111111",
 }
 app.user_middleware = []
+
 
 def test_signup(client, monkeypatch):
     # Працюэ лише якщо ігнорити мідлвари
@@ -20,3 +23,13 @@ def test_signup(client, monkeypatch):
     assert data["email"] == user_data["email"]
     assert "password" not in data
     assert "avatar" in data
+
+
+# def test_repeat_signup(client, monkeypatch):
+#     mock_send_email = MagicMock()
+#     monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
+#     with pytest.raises(HTTPException) as exc_info:
+#         client.post("api/auth/signup", json=user_data)
+#
+#     assert exc_info.value.status_code == status.HTTP_409_CONFLICT
+#     assert exc_info.value.detail == ACCOUNT_EXIST

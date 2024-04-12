@@ -14,7 +14,7 @@ from fastapi_limiter.depends import RateLimiter
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.config import config
+from src.conf.config import config
 from src.database.db import get_db
 from src.middlewares import ip_middleware
 from src.middlewares import user_agent_middleware

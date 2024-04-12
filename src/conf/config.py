@@ -1,9 +1,10 @@
-from pydantic import EmailStr, ConfigDict
+from pydantic import EmailStr
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+
     DB_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
     SECRET_KEY_JWT: str = "123213213123fgedgfdg"
     ALGORITHM: str = "HS256"
@@ -37,7 +38,6 @@ class Settings(BaseSettings):
         if v not in ["HS256", "HS512"]:
             raise ValueError("ALGORITHM must be HS256 or HS512")
         return v
-
 
     class Config:
         extra = "ignore"

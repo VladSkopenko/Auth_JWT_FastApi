@@ -1,2 +1,8 @@
+steps_docs
 1)sphinx-quickstart docs
 2).\make.bat html
+
+
+step_tests
+1)$env:PYTHONPATH = "C:\Users\user\Desktop\AddressBook" #add path
+2)pytest -v  #run test

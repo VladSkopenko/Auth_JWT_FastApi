@@ -7,7 +7,7 @@ from fastapi_mail import MessageType
 from fastapi_mail.errors import ConnectionErrors
 from pydantic import EmailStr
 
-from src.database.config import config
+from src.conf.config import config
 from src.services.auth import auth_service
 
 conf = ConnectionConfig(
