@@ -41,7 +41,10 @@ class DataBaseSessionManager:
         session = self._session_maker()
         try:
             yield session
+
+        except Exception:
             await session.rollback()
+            raise
         finally:
             await session.close()
 

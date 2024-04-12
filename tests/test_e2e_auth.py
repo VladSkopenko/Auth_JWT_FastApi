@@ -23,16 +23,17 @@ def test_signup(client, monkeypatch, log):
     data = response.json()
     assert data["username"] == user_data["username"]
     assert data["email"] == user_data["email"]
-    log.write(f"{datetime.now():%Y-%m-%d %H:%M:%S} - {client} is register successfully\n")
+    log.write(
+        f"{datetime.now():%Y-%m-%d %H:%M:%S} - {client} is register successfully\n"
+    )
     assert "password" not in data
     assert "avatar" in data
 
 
-# def test_repeat_signup(client, monkeypatch):
-#     mock_send_email = MagicMock()
-#     monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
-#     with pytest.raises(HTTPException) as exc_info:
-#         client.post("api/auth/signup", json=user_data)
-#
-#     assert exc_info.value.status_code == status.HTTP_409_CONFLICT
-#     assert exc_info.value.detail == ACCOUNT_EXIST
+def test_repeat_signup(client, monkeypatch):
+    mock_send_email = MagicMock()
+    monkeypatch.setattr("src.routes.auth.send_email", mock_send_email)
+    response = client.post("api/auth/signup", json=user_data)
+    assert response.status_code == 409, response.text
+    data = response.json()
+    assert data["detail"] == ACCOUNT_EXIST

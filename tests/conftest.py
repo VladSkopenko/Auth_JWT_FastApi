@@ -31,6 +31,18 @@ TestingSessionLocal = async_sessionmaker(
 
 @pytest.fixture
 def log(request):
+
+    """
+The log function is a fixture that creates a log file for each test.
+It takes the request object as an argument and uses it to get the name of
+the current test. It then creates a directory called logs if one does not
+already exist, and opens or appends to a file with the same name as the
+test in that directory.
+
+:param request: Get the name of the test
+:return: The log file, which is then passed to the fixture
+:doc-author: Trelent
+"""
     if not os.path.exists("logs"):
         os.mkdir("logs")
     with open(f"logs/{request.node.name}.log", mode="a", encoding="utf-8") as log:
@@ -39,7 +51,24 @@ def log(request):
 
 @pytest.fixture(scope="module", autouse=True)
 def init_models_wrap():
+
+    """
+The init_models_wrap function is a wrapper function that allows us to call the init_models function
+asynchronously. The init_models function drops all tables in our database and then creates them again.
+This is useful for testing purposes, as it ensures that we are always working with a clean slate.
+
+:return: The init_models function
+:doc-author: Trelent
+"""
     async def init_models():
+
+        """
+    The init_models function is used to initialize the database with a test user.
+    It will drop all tables and recreate them, then add a test user to the database.
+
+    :return: A tuple of two elements:
+    :doc-author: Trelent
+    """
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
@@ -83,9 +112,9 @@ def client():
         session = TestingSessionLocal()
         try:
             yield session
-        except Exception as err:
-            print(err)
+        except Exception:
             await session.rollback()
+            raise
         finally:
             await session.close()
 
