@@ -1,5 +1,5 @@
 from unittest.mock import patch
-
+from unittest.mock import patch, MagicMock, AsyncMock
 from main import app
 from src.services.auth import auth_service
 
@@ -24,8 +24,7 @@ def test_get_contacts(client, get_token):
         assert response.status_code == 200, response.text
 
 
-def test_create_contacts(client, get_token):
-    # Працює лише якщо закомендувати рейт ліміт
+def test_create_contacts(client, get_token, monkeypatch):
     """
     The test_create_contacts function tests the creation of a new contact.
     It does so by first mocking the redis cache, and then sending a POST request to
@@ -39,6 +38,9 @@ def test_create_contacts(client, get_token):
     """
     with patch.object(auth_service, "cache") as redis_mock:
         redis_mock.get.return_value = None
+        monkeypatch.setattr("fastapi_limiter.FastAPILimiter.redis", AsyncMock())
+        monkeypatch.setattr("fastapi_limiter.FastAPILimiter.identifier", AsyncMock())
+        monkeypatch.setattr("fastapi_limiter.FastAPILimiter.http_callback", AsyncMock())
         headers = {"Authorization": f"Bearer {get_token}"}
         response = client.post(
             "api/contacts",

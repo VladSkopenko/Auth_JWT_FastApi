@@ -79,7 +79,7 @@ async def get_all_contacts(
 @router.post(
     "/",
     response_model=ContactResponse,
-    #dependencies=[Depends(RateLimiter(times=2, seconds=5))],
+    dependencies=[Depends(RateLimiter(times=2, seconds=5))],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_contact(
