@@ -25,6 +25,7 @@ def test_get_contacts(client, get_token):
 
 
 def test_create_contacts(client, get_token):
+    # Працює лише якщо закомендувати рейт ліміт
     """
     The test_create_contacts function tests the creation of a new contact.
     It does so by first mocking the redis cache, and then sending a POST request to
