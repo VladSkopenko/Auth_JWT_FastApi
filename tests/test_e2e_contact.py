@@ -21,4 +21,39 @@ def test_get_contacts(client, get_token):
         redis_mock.get.return_value = None
         headers = {"Authorization": f"Bearer {get_token}"}
         response = client.get("api/contacts", headers=headers)
-        assert response.status_code == 200
+        assert response.status_code == 200, response.text
+
+
+def test_create_contacts(client, get_token):
+    """
+    The test_create_contacts function tests the creation of a new contact.
+    It does so by first mocking the redis cache, and then sending a POST request to
+    the api/contacts endpoint with an Authorization header containing a valid JWT token.
+    The response is checked for status code 201 (Created), and its JSON data is checked for correctness.
+
+    :param client: Make requests to the flask application
+    :param get_token: Get the token from the fixture
+    :return: A 201 status code and a json object with the created contact
+    :doc-author: Trelent
+    """
+    with patch.object(auth_service, "cache") as redis_mock:
+        redis_mock.get.return_value = None
+        headers = {"Authorization": f"Bearer {get_token}"}
+        response = client.post(
+            "api/contacts",
+            headers=headers,
+            json={
+                "name": "test",
+                "lastname": "testovich",
+                "email": "example@example.com",
+                "phone": "123456789",
+                "birthday": "1990-01-01",
+                "notes": "Some notes here",
+            },
+        )
+        assert response.status_code == 201, response.text
+        data = response.json()
+        assert "id" in data
+        assert data["name"] == "test"
+        assert data["lastname"] == "testovich"
+        assert "password" not in data

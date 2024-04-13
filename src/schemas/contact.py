@@ -30,13 +30,13 @@ class ContactStatusUpdate(BaseModel):
 
 class ContactResponse(BaseModel):
     id: int = 1
-    name: str
-    lastname: str
-    email: EmailStr
-    phone: str
-    birthday: date
-    notes: str
-    favourite: bool
+    name: str | None
+    lastname: str | None
+    email: EmailStr | None
+    phone: str | None
+    birthday: date | None
+    notes: str | None
+    favourite: bool | None
     created_at: datetime | None
     updated_at: datetime | None
     user: UserResponse | None
