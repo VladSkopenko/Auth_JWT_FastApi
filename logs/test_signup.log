@@ -21,3 +21,6 @@
 2024-04-12 18:28:07 - <starlette.testclient.TestClient object at 0x00000176147D53A0> is register successfully
 2024-04-12 18:30:16 - <starlette.testclient.TestClient object at 0x000001BE038E11C0> is register successfully
 2024-04-12 18:46:39 - <starlette.testclient.TestClient object at 0x0000020AC08AFE60> is register successfully
+2024-04-12 18:49:14 - <starlette.testclient.TestClient object at 0x000001C9F2D73110> is register successfully
+2024-04-12 18:53:36 - <starlette.testclient.TestClient object at 0x000001D3870A8F50> is register successfully
+2024-04-12 18:55:44 - <starlette.testclient.TestClient object at 0x00000116FEF6FD70> is register successfully
