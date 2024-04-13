@@ -6,3 +6,4 @@ steps_docs
 step_tests
 1)$env:PYTHONPATH = "C:\Users\user\Desktop\AddressBook" #add path
 2)pytest -v  #run test
+3)pytest --cov=./src --cov-report html tests/
