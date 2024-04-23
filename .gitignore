@@ -4,3 +4,4 @@ docker_compose_help.txt
 __pycache__
 .env
 .pytest_cache
+venv
