@@ -61,3 +61,5 @@ class User(Base):
         "role", Enum(Role), default=Role.user, nullable=True
     )
     confirmed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
+
+

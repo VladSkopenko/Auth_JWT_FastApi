@@ -1,6 +1,8 @@
+import os
 from pathlib import Path
 
 import redis.asyncio as redis
+import uvicorn
 from fastapi import Depends
 from fastapi import FastAPI
 from fastapi import HTTPException
@@ -112,3 +114,12 @@ async def healthchecker(db: AsyncSession = Depends(get_db)):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Error connecting to the database")
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000)),
+        log_level="info",
+    )

@@ -5,10 +5,12 @@ passlib~=1.7.4
 libgravatar~=1.0.4
 alembic~=1.13.1
 fastapi_mail
-redis
+redis~=5.0.2
 fastapi-limiter
 jinja2
-cloudinary
-pytest
+cloudinary~=1.39.1
+pytest~=8.1.1
 pytest-asyncio-0.23.6
 httpx
+pytz~=2024.1
+uvicorn~=0.28.0
